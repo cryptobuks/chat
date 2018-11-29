@@ -12,7 +12,7 @@
                     <i class="fa fa-ellipsis-v fa-md px-2"></i>
                 </div>
             </div>
-            <div class="flex-1 w-full px-3 overflow-y-auto" ref="chat">
+            <div class="flex-1 w-full px-3 overflow-y-auto" ref="chatContainer">
                 <others-bubble></others-bubble>
                 <my-bubble></my-bubble>
                 <others-bubble></others-bubble>
@@ -27,7 +27,7 @@
                 <my-bubble></my-bubble>
             </div>
             <div class="rounded bg-white p-2 flex">
-                <input type="text" class="flex-1 border-0 px-4 py-2" placeholder="Type your message...">
+                <input type="text" class="flex-1 border-0 px-4 py-2" placeholder="Type your message..." ref="message">
                 <button class="text-grey mx-4"><i class="fa fa-paperclip fa-lg"></i></button>
                 <button class="bg-blue rounded-full text-white w-10 h-10">
                     <i class="fa fa-paper-plane fa-fw"></i>
@@ -43,14 +43,16 @@ import OthersBubble from '@/components/OthersBubble.vue';
 
 export default {
     components: {MyBubble, OthersBubble},
-    created() {
+    mounted() {
         this.scrollToBottom();
-        // container.scrollTop = container.scrollHeight;
+        this.focusType();
     },
     methods: {
         scrollToBottom() {
-            let container = this.$refs.chat;
-            console.log(container);
+            this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
+        },
+        focusType() {
+            this.$refs.message.focus();
         }
     }
 }
