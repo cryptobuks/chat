@@ -1,6 +1,10 @@
 <template>
     <div class="flex flex-col h-full">
-        <Navigation :logged-in="false"></Navigation>
+        <Navigation :loggedIn="true"></Navigation>
+        <div class="flex h-full px-3">
+            <contacts></contacts>
+            <chat-box></chat-box>
+        </div>
     </div>
 </template>
 
