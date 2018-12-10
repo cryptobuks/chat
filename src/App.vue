@@ -1,6 +1,8 @@
 <template>
     <div id="app" class="w-full bg-grey-lighter h-screen">
-        <router-view/>
+        <transition name="slide">
+            <router-view/>
+        </transition>
     </div>
 </template>
 

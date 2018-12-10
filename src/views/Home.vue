@@ -6,10 +6,8 @@
 
 <script>
 import Navigation from '@/components/Navigation.vue';
-import Contacts from '@/components/Contacts.vue';
-import ChatBox from '@/components/ChatBox.vue';
 
 export default {
-    components: {Navigation, Contacts, ChatBox}
+    components: {Navigation}
 };
 </script>
