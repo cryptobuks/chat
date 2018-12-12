@@ -60,10 +60,7 @@
   * @import "utilities/background-patterns";
   * @import "utilities/skew-transforms";
   */
- 
-  @import url('https://use.fontawesome.com/releases/v5.5.0/css/all.css');
-  @import url('https://fonts.googleapis.com/css?family=Lato');
 
-  body, html {
-    font-family: 'Lato', sans-serif;
-  }
+body, html {
+  font-family: 'Lato', sans-serif;
+}

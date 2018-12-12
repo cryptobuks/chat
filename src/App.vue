@@ -8,6 +8,31 @@
 
 <script>
 import "@/assets/styles/main.css";
+import { mapActions, mapState } from 'vuex';
 
-export default {};
+export default {
+    mounted() {
+        if (window.sessionStorage.getItem('loggedInUser')) {
+            this.loginUser(JSON.parse(window.sessionStorage.getItem('loggedInUser')));
+        }
+    },
+    computed: {
+        ...mapState(['user'])
+    },
+    watch: {
+        user: {
+            handler(newUser) {
+                if (newUser) {
+                    this.$router.replace('/chat');
+                } else {
+                    this.$router.replace('/');
+                }
+            },
+            deep: true
+        }
+    },
+    methods: {
+        ...mapActions(['loginUser'])
+    }
+};
 </script>

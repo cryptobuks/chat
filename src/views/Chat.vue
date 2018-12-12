@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col h-full">
-        <Navigation :loggedIn="true"></Navigation>
+        <Navigation></Navigation>
         <div class="flex h-full px-3">
             <contacts></contacts>
             <chat-box></chat-box>
@@ -12,8 +12,17 @@
 import Navigation from '@/components/Navigation.vue';
 import Contacts from '@/components/Contacts.vue';
 import ChatBox from '@/components/ChatBox.vue';
+import {mapState} from 'vuex';
 
 export default {
-    components: {Navigation, Contacts, ChatBox}
+    components: {Navigation, Contacts, ChatBox},
+    beforeMount() {
+        if (! window.sessionStorage.getItem('loggedInUser')) {
+            this.$router.replace('/');
+        }
+    },
+    computed: {
+        ...mapState(['user'])
+    }
 };
 </script>

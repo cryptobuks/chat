@@ -1,10 +1,11 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Home from './views/Home.vue';
+import store from './store';
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
@@ -16,7 +17,10 @@ export default new Router({
         {
             path: '/chat',
             name: 'chat',
-            component: () => import(/* webpackChunkName: "about" */ './views/Chat.vue')
+            component: () => import(/* webpackChunkName: "about" */ './views/Chat.vue'),
+            meta: {
+                requireAuth: true,
+            }
         },
         {
             path: '/about',
@@ -24,4 +28,14 @@ export default new Router({
             component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
         }
     ]
-})
+});
+
+router.beforeEach((to, from, next) => {
+    if (! store.state.user && to.meta.requireAuth) {
+        next({path: '/', replace: true});
+    }
+
+    next();
+});
+
+export default router;
