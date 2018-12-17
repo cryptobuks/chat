@@ -23,6 +23,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import firebase from '@/firebase';
 
 export default {
     computed: {
@@ -30,8 +31,13 @@ export default {
     },
     methods: {
         logout() {
-            window.sessionStorage.removeItem('loggedInUser');
-            this.logOutUser();
+            firebase.auth().signOut().then(() => {
+                window.sessionStorage.removeItem('loggedInUser');
+                this.logOutUser();
+            }).then((error) => {
+                // eslint-disable-next-line
+                console.log(error);
+            });
         },
         ...mapActions(['logOutUser'])
     }

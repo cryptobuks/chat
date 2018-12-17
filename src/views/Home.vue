@@ -1,6 +1,5 @@
 <template>
     <div class="flex flex-col h-full items-center justify-center">
-        <!-- <Navigation :logged-in="false"></Navigation> -->
         <div class="w-1/2 rounded bg-white text-grey-darkest shadow">
             <div class="p-4 border-solid border-b border-grey-light text-center">
                 Start using the chat by signing in
@@ -16,13 +15,11 @@
 </template>
 
 <script>
-import Navigation from '@/components/Navigation.vue';
 import firebase from '../firebase';
 import User from '../user';
 import { mapActions, mapState } from 'vuex';
 
 export default {
-    components: {Navigation},
     computed: {
         googleProvider() {
             return new firebase.auth.GoogleAuthProvider();
@@ -39,10 +36,8 @@ export default {
                 window.sessionStorage.setItem('loggedInUser', JSON.stringify(theUser));
                 this.loginUser(theUser);
             }).catch(function(error) {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                var email = error.email;
-                var credential = error.credential;
+                // eslint-disable-next-line
+                console.log(error);
             });
         },
         ...mapActions(['loginUser'])
