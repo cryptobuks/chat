@@ -2,9 +2,11 @@
 
 namespace App;
 
+use App\Pivot\UserFriends;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -27,6 +29,16 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * @return BelongsToMany
+     */
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'user_friends', 'user_id', 'friend_id')
+            ->withPivot(['muted_at', 'muted_until', 'pinned_at'])->using(UserFriends::class)
+            ->withTimestamps();
+    }
 
     /**
      * @return User

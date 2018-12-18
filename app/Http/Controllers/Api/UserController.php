@@ -10,9 +10,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        // $this->user()->friends();
-
-        return ['status' => true, 'data' => []];
+        return response()->api($this->user()->friends);
     }
 
     public function login(Request $request)
@@ -21,21 +19,32 @@ class UserController extends Controller
         $request->merge(['provider' => 'Google', 'provider_id' => $request->id]);
         $user->fill($request->except('id'))->save();
 
-        return ['status' => true, 'data' => $user->apiLogin()];
+        return response()->api($user->apiLogin());
     }
 
     public function search(Request $request)
     {
-        $users = User::where(function($query) use ($request) {
+        $users = User::where(function ($query) use ($request) {
             $query->orWhere('name', 'LIKE', "%{$request->term}%")
                 ->orWhere('email', 'LIKE', "%{$request->term}%");
-        })->limit(5)->get();
+        })->whereNotIn('id', $this->user()->friends()->pluck('id')->merge([$this->user()->id]))
+        ->limit(5)->get();
 
-        return ['status' => true, 'data' => $users];
+        return response()->api($users);
     }
 
     public function invite(Request $request)
     {
-        return ['status' => true, 'data' => User::all()];
+        $this->user()->friends()->attach($request->id);
+
+        return response()->api($this->user()->friends);
+    }
+
+    /**
+     * @return User
+     */
+    protected function user()
+    {
+        return auth('api')->user();
     }
 }

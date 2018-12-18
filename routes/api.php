@@ -12,6 +12,8 @@
 */
 
 Route::post('/users', 'Api\UserController@login');
-Route::get('/users', 'Api\UserController@index');
-Route::get('/users/search', 'Api\UserController@search');
-Route::put('/users/invite', 'Api\UserController@invite');
+Route::middleware('auth:api')->prefix('users')->group(function () {
+    Route::get('/', 'Api\UserController@index');
+    Route::get('/search', 'Api\UserController@search');
+    Route::put('/invite', 'Api\UserController@invite');
+});
