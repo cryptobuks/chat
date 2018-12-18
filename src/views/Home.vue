@@ -29,14 +29,9 @@ export default {
     methods: {
         loginWithGoogle() {
             firebase.auth().signInWithPopup(this.googleProvider).then((result) => {
-                let token = result.credential.accessToken;
-                let user = result.user;
-                let theUser = new User(user, token);
-
-                window.sessionStorage.setItem('loggedInUser', JSON.stringify(theUser));
-                this.loginUser(theUser);
+                let user = new User(result.user, result.credential.accessToken);
+                this.loginUser(user);
             }).catch(function(error) {
-                // eslint-disable-next-line
                 console.log(error);
             });
         },

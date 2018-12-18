@@ -13,12 +13,15 @@ import Navigation from '@/components/Navigation.vue';
 import Contacts from '@/components/Contacts.vue';
 import ChatBox from '@/components/ChatBox.vue';
 import {mapState} from 'vuex';
+import auth from '@/auth';
 
 export default {
     components: {Navigation, Contacts, ChatBox},
     beforeMount() {
-        if (! window.sessionStorage.getItem('loggedInUser')) {
+        if (! auth.check()) {
             this.$router.replace('/');
+        } else {
+            this.$store.commit('login', auth.user());
         }
     },
     computed: {

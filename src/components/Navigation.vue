@@ -32,10 +32,8 @@ export default {
     methods: {
         logout() {
             firebase.auth().signOut().then(() => {
-                window.sessionStorage.removeItem('loggedInUser');
                 this.logOutUser();
             }).then((error) => {
-                // eslint-disable-next-line
                 console.log(error);
             });
         },

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
-import store from './store';
+import auth from './auth';
 
 Vue.use(Router)
 
@@ -31,7 +31,7 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-    if (! store.state.user && to.meta.requireAuth) {
+    if (! auth.check() && to.meta.requireAuth) {
         next({path: '/', replace: true});
     }
 

@@ -1,15 +1,16 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import Axios from 'axios';
+import auth from './auth';
+import service from './service';
 
 Vue.use(Vuex);
-let API_BASE = 'http://localhost/chatter/public/';
 
 export default new Vuex.Store({
     state: {
         user: null,
         friends: [],
         searchFriend: null,
+        current: null,
     },
     mutations: {
         login(state, user) {
@@ -23,41 +24,46 @@ export default new Vuex.Store({
         },
         searchFriend(state, promise) {
             state.searchFriend = promise;
+        },
+        current(state, user) {
+            state.current = user;
         }
     },
     actions: {
         loginUser(context, user) {
-            Axios.post(API_BASE + 'api/users', user).then((response) => {
-                // eslint-disable-next-line
-                context.commit('login', response.data.data);
+            service.api().post('users', user).then((response) => {
+                let user = response.data.data;
+                auth.login(user);
+                context.commit('login', user);
             }).catch((error) => {
-                // eslint-disable-next-line
                 console.log(error);
             });
         },
         logOutUser(context) {
+            auth.logout();
             context.commit('logout');
         },
         getFriendList(context) {
-            Axios.get(API_BASE + 'api/users').then((response) => {
+            service.auth().get('users').then((response) => {
                 let data = response.data;
                 if (! data.status) {
-                    // eslint-disable-next-line
                     console.log(data.message);
                 }
                 context.commit('friends', data.data);
             });
         },
         searchFriends(context, term) {
-            context.commit('searchFriend', Axios.get(API_BASE + 'api/users/search', {term}));
+            context.commit('searchFriend', service.auth().get('users/search?term='+term));
         },
         addFriend(context, id) {
-            Axios.put(API_BASE + 'api/users/invite', {id}).then((xhr) => {
+            service.auth().put('users/invite', {id}).then((xhr) => {
                 context.commit('friends', xhr.data.data);
             }).catch((error) => {
-                // eslint-disable-next-line
                 console.log(error);
             });
+        },
+        startConversation(context, user) {
+            context.commit('current', user);
         }
     }
 })

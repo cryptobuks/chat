@@ -30,8 +30,5 @@ export default {
         margin-right: -1rem;
         margin-bottom: -1rem;
     }
-    .on-top{
-        z-index: 999;
-    }
 </style>
 
