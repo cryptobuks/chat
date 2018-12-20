@@ -8,13 +8,26 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
+    /**
+     * @return Response
+     */
     public function index()
     {
         return response()->api($this->user()->friends);
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'name' => 'required',
+            'image' => 'required',
+        ]);
+
         $user = User::firstOrNew($request->only('email'));
         $request->merge(['provider' => 'Google', 'provider_id' => $request->id]);
         $user->fill($request->except('id'))->save();
@@ -22,6 +35,10 @@ class UserController extends Controller
         return response()->api($user->apiLogin());
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function search(Request $request)
     {
         $users = User::where(function ($query) use ($request) {
@@ -33,6 +50,10 @@ class UserController extends Controller
         return response()->api($users);
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function invite(Request $request)
     {
         $this->user()->friends()->attach($request->id);

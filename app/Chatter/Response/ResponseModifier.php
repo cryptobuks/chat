@@ -99,6 +99,19 @@ class ResponseModifier implements Responsable
     }
 
     /**
+     * @param string $message
+     * @return ResponseModifier
+     */
+    public function validation($message)
+    {
+        $this->status = false;
+        $this->code = Response::HTTP_UNPROCESSABLE_ENTITY;
+        $this->message = $message;
+
+        return $this;
+    }
+
+    /**
      * @param Request $request
      * @return Response
      */

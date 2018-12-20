@@ -3,7 +3,11 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Chatter\Exceptions\ApiValidationException;
+use App\Chatter\Exceptions\ApiUnauthenticatedException;
 
 class Handler extends ExceptionHandler
 {
@@ -46,6 +50,28 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($request->is('api/*')) {
+            $this->renderApi($request, $exception);
+        }
+
         return parent::render($request, $exception);
+    }
+
+    /**
+     * Handle Exception Thrown in API
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Exception  $exception
+     * @return \Illuminate\Http\Response
+     */
+    protected function renderApi($request, Exception $exception)
+    {
+        if ($exception instanceof ValidationException) {
+            throw new ApiValidationException($exception);
+        }
+
+        if ($exception instanceof AuthenticationException) {
+            throw new ApiUnauthenticatedException($exception);
+        }
     }
 }
