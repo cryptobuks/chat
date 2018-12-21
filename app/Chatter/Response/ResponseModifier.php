@@ -91,11 +91,15 @@ class ResponseModifier implements Responsable
      */
     public function unauthorized()
     {
-        $this->message = 'Unauthorized request';
-        $this->status = false;
-        $this->code = Response::HTTP_UNAUTHORIZED;
+        return $this->error('Unauthorized request', Response::HTTP_UNAUTHORIZED);
+    }
 
-        return $this;
+    /**
+     * @return ResponseModifier
+     */
+    public function unauthenticated()
+    {
+        return $this->error('Unauthenticated request.', Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -104,11 +108,17 @@ class ResponseModifier implements Responsable
      */
     public function validation($message)
     {
-        $this->status = false;
-        $this->code = Response::HTTP_UNPROCESSABLE_ENTITY;
-        $this->message = $message;
+        return $this->error($message, Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
 
-        return $this;
+    /**
+     * @param string $message
+     * @param integer $code
+     * @return ResponseModifier
+     */
+    public function error($message, $code = Response::HTTP_INTERNAL_SERVER_ERROR)
+    {
+        return $this->status(false)->message($message)->code($code);
     }
 
     /**

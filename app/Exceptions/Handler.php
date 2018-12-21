@@ -5,9 +5,10 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use App\Chatter\Exceptions\ApiValidationException;
 use App\Chatter\Exceptions\ApiUnauthenticatedException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Chatter\Exceptions\DefaultException;
 
 class Handler extends ExceptionHandler
 {
@@ -18,6 +19,16 @@ class Handler extends ExceptionHandler
      */
     protected $dontReport = [
         //
+    ];
+
+    /**
+     * Api handleable exceptions
+     *
+     * @var array
+     */
+    protected $apiExceptions = [
+        AuthenticationException::class => ApiUnauthenticatedException::class,
+        ValidationException::class => ApiValidationException::class,
     ];
 
     /**
@@ -50,7 +61,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($request->is('api/*')) {
+        if ($request->is('api*')) {
             $this->renderApi($request, $exception);
         }
 
@@ -62,16 +73,18 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Exception  $exception
-     * @return \Illuminate\Http\Response
      */
     protected function renderApi($request, Exception $exception)
     {
-        if ($exception instanceof ValidationException) {
-            throw new ApiValidationException($exception);
+        if (array_key_exists(get_class($exception), $this->apiExceptions)) {
+            $apiException = $this->apiExceptions[get_class($exception)];
+
+            throw new $apiException($exception);
         }
 
-        if ($exception instanceof AuthenticationException) {
-            throw new ApiUnauthenticatedException($exception);
+        if (! in_array(get_class($exception), $this->apiExceptions) and ! is_a($exception, DefaultException::class)) {
+            // dd($exception);
+            throw new DefaultException($exception);
         }
     }
 }

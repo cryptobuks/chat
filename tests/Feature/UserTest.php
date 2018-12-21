@@ -95,6 +95,9 @@ class UserTest extends TestCase
         $this->assertEquals($response->json('code'), Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    /**
+     * @return array
+     */
     protected function api()
     {
         return [
@@ -102,6 +105,10 @@ class UserTest extends TestCase
         ];
     }
 
+    /**
+     * @param User $user
+     * @return array
+     */
     protected function auth($user)
     {
         $user->apiLogin();
