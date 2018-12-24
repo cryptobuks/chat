@@ -10,6 +10,6 @@ class UserFriends extends Pivot
      * @var array
      */
     protected $dates = [
-        'muted_at', 'muted_until', 'pinned_at'
+        'muted_at', 'muted_until', 'pinned_at',
     ];
 }
