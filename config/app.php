@@ -122,6 +122,8 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'api' => env('API_KEY'),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
