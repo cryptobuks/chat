@@ -2,15 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use Tests\TestCase;
+use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\User;
-use Illuminate\Http\Response;
 
 class UserTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
 
     public function test_a_user_can_be_created_and_logged_in()
     {
