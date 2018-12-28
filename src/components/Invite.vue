@@ -9,7 +9,7 @@
             <div class="flex mt-4 justify-center" v-if="loading">
                 <i class="fa fa-sync-alt fa-spin"></i>
             </div>
-            <div class="flex" v-if="!loading">
+            <div class="flex flex-col" v-if="!loading">
                 <div v-for="item in searchResults" :key="item.id" class="w-full">
                     <div class="flex items-center mt-4 cursor-pointer hover:bg-grey-lighter p-2" @click="inviteUser(item)">
                         <div class="flex items-start mr-4">
@@ -21,7 +21,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex w-full justify-center mt-4 p-2" v-if="searchResults.length < 1">
+                <div class="flex w-full justify-center mt-4 p-2" v-if="searchResults.length < 1 && searchFriend">
                     <span class="text-sm text-grey">No results found</span>
                 </div>
             </div>
@@ -73,6 +73,9 @@ export default {
             });
         },
         closeModal() {
+            this.term = null;
+            this.searchResults = [];
+            this.searchFriends(this.term);
             this.$emit('close');
         },
         ...mapActions(['searchFriends', 'addFriend'])
