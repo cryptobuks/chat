@@ -13,5 +13,8 @@ export default {
     },
     current(state, user) {
         state.current = user;
+    },
+    wait(state, what) {
+        state.wait = what;
     }
 };

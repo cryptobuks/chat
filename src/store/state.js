@@ -3,4 +3,5 @@ export default {
     friends: [],
     searchFriend: null,
     current: null,
+    wait: false,
 }
