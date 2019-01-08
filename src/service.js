@@ -5,7 +5,7 @@ import auth from "./auth";
 class Service {
     constructor() {
         this.config = {
-            baseURL: 'http://localhost/chatter/public/api/',
+            baseURL: config.API_BASE_URL,
             headers: {
                 'x-api-key': config.API_KEY,
             }
@@ -29,7 +29,7 @@ class Service {
     web() {
         return axios.create({
             ...this.config,
-            baseURL: 'http://localhost/chatter/public/'
+            baseURL: config.WEB_BASE_URL
         });
     }
 }
