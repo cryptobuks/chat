@@ -13,7 +13,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->api($this->user()->friends);
+        $friends = $this->user()->friends()->latest()->get();
+        $invitations = $this->user()->invitations()->latest()->get();
+
+        return response()->api($friends->merge($invitations));
     }
 
     /**
@@ -41,10 +44,14 @@ class UserController extends Controller
      */
     public function search(Request $request)
     {
+        $except = $this->user()->friends()->pluck('id')
+            ->merge($this->user()->invitations()->pluck('id'))
+            ->merge([$this->user()->id]);
+
         $users = User::where(function ($query) use ($request) {
             $query->orWhere('name', 'LIKE', "%{$request->term}%")
                 ->orWhere('email', 'LIKE', "%{$request->term}%");
-        })->whereNotIn('id', $this->user()->friends()->pluck('id')->merge([$this->user()->id]))
+        })->whereNotIn('id', $except)
         ->limit(5)->get();
 
         return response()->api($users);
@@ -56,7 +63,7 @@ class UserController extends Controller
      */
     public function invite(Request $request)
     {
-        $this->user()->friends()->attach($request->id);
+        $this->user()->inviteFriend($request->id);
 
         return response()->api($this->user()->friends);
     }

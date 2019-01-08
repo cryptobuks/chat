@@ -16,6 +16,7 @@ class CreateUserFriendsTable extends Migration
         Schema::create('user_friends', function (Blueprint $table) {
             $table->integer('user_id')->unsigned();
             $table->integer('friend_id')->unsigned();
+            $table->string('room')->nullable();
             $table->timestamp('muted_at')->nullable();
             $table->timestamp('muted_until')->nullable();
             $table->timestamp('pinned_at')->nullable();

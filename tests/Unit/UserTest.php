@@ -27,4 +27,22 @@ class UserTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $user->friends);
     }
+
+    public function test_it_has_invitations()
+    {
+        $user = factory(User::class)->create();
+
+        $this->assertInstanceOf(Collection::class, $user->invitations);
+    }
+
+    public function test_it_has_invite_friend()
+    {
+        $user = factory(User::class)->create();
+        $friend = factory(User::class)->create();
+
+        $user->inviteFriend($friend->id);
+
+        $this->assertInstanceOf(Collection::class, $user->friends);
+        $this->assertCount(1, $user->friends);
+    }
 }

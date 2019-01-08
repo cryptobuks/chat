@@ -36,8 +36,29 @@ class User extends Authenticatable
     public function friends()
     {
         return $this->belongsToMany(User::class, 'user_friends', 'user_id', 'friend_id')
-            ->withPivot(['muted_at', 'muted_until', 'pinned_at'])->using(UserFriends::class)
-            ->withTimestamps();
+            ->withPivot(['muted_at', 'muted_until', 'pinned_at', 'room'])
+            ->using(UserFriends::class)->withTimestamps();
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function invitations()
+    {
+        return $this->belongsToMany(User::class, 'user_friends', 'friend_id', 'user_id')
+            ->withPivot(['muted_at', 'muted_until', 'pinned_at', 'room'])
+            ->using(UserFriends::class)->withTimestamps();
+    }
+
+    /**
+     * @param integer $id
+     * @return User
+     */
+    public function inviteFriend($id)
+    {
+        $this->friends()->attach($id, ['room' => str_random(8)]);
+
+        return $this;
     }
 
     /**

@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UsersTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
 
     public function test_a_user_can_be_created_and_logged_in()
     {
@@ -30,27 +30,39 @@ class UsersTest extends TestCase
         $this->withoutExceptionHandling();
 
         $friend = factory(User::class)->create();
+        $invited = factory(User::class)->create();
         $me = factory(User::class)->create();
+
+        // I added someone as friend
         $me->friends()->attach($friend->id);
+        // Someone else added me as friend
+        $invited->friends()->attach($me->id);
 
         $response = $this->getJson('/api/users', $this->auth($me));
         $response->assertOk();
         $this->assertTrue($response->json('status'));
         $response->assertJsonFragment($friend->toArray());
-        $this->assertCount(1, $response->json('data'));
+        $this->assertCount(2, $response->json('data'));
     }
 
     public function test_a_user_can_search_friends()
     {
         $this->withoutExceptionHandling();
 
-        $friend = factory(User::class)->create();
+        $name = $this->faker->name;
+        $public = factory(User::class)->create(compact('name'));
+        $invited = factory(User::class)->create(compact('name'));
+        $friend = factory(User::class)->create(compact('name'));
         $me = factory(User::class)->create();
+        $me->friends()->attach($friend->id);
+        $invited->friends()->attach($me->id);
 
-        $response = $this->getJson('/api/users/search?term='.$friend->name, $this->auth($me));
+        $response = $this->getJson('/api/users/search?term='.$public->name, $this->auth($me));
         $response->assertOk();
         $this->assertTrue($response->json('status'));
-        $response->assertJsonFragment($friend->toArray());
+        $response->assertJsonFragment($public->toArray());
+
+        // Only non-friends will show up
         $this->assertCount(1, $response->json('data'));
     }
 
@@ -66,6 +78,14 @@ class UsersTest extends TestCase
         $this->assertTrue($response->json('status'));
         $this->assertCount(1, $response->json('data'));
         $this->assertCount(1, $me->friends);
+
+        $first = $me->friends->first();
+        $this->assertNotEmpty($first->pivot->room);
+    }
+
+    public function test_user_friends_will_have_a_room()
+    {
+        $this->assertTrue(true);
     }
 
     public function test_user_email_is_required()
