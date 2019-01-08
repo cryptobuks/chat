@@ -13,12 +13,16 @@
                 </div>
             </div>
             <div class="flex-1 w-full px-3 overflow-y-auto" ref="chatContainer">
+                <div v-for="chat in conversation">
+                    <my-bubble v-if="chat.from == user.id" :message="chat.body"></my-bubble>
+                    <others-bubble v-if="chat.from != user.id" :user="current" :message="chat.body"></others-bubble>
+                </div>
                 <div class="flex justify-center text-grey-darker w-full h-full items-center text-sm" v-if="conversation.length < 1">
                     Start Conversation
                 </div>
             </div>
             <div class="rounded bg-white p-2 flex" v-show="current">
-                <input type="text" class="flex-1 border-0 px-4 py-2" placeholder="Type your message..." ref="message">
+                <input type="text" class="flex-1 border-0 px-4 py-2" @keyup="sendMessage" placeholder="Type your message..." ref="message">
                 <button class="text-grey mx-4"><i class="fa fa-paperclip fa-lg" v-show="false"></i></button>
                 <button class="bg-blue rounded-full text-white w-10 h-10">
                     <i class="fa fa-paper-plane fa-fw"></i>
@@ -35,28 +39,58 @@ import { mapState } from 'vuex';
 
 export default {
     components: {MyBubble, OthersBubble},
-    data() {
-        return {
-            conversation: [],
-        }
-    },
     mounted() {
         if (this.current) {
             this.scrollToBottom();
             this.focusType();
         }
     },
+    data() {
+        return {
+            conversation: []
+        }
+    },
     computed: {
-        ...mapState(['user', 'current'])
+        ...mapState(['user', 'current', 'conversations']),
     },
     methods: {
+        sendMessage(e) {
+            if (e.keyCode == 13) {
+                const payload = {
+                    type: 'CHAT',
+                    from: this.user.id,
+                    body: this.$refs.message.value,
+                    room: this.current.pivot.room
+                };
+                this.$store.state.chat.send(`chat/${this.current.pivot.room}`, payload);
+                this.$refs.message.value = '';
+                this.$store.state.chat.send(`message/${this.current.id}`, {...payload, type: 'MESSAGE'});
+            }
+        },
         scrollToBottom() {
-            console.log('Scrolling...');
             this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
         },
         focusType() {
-            console.log('Focusing...');
             this.$refs.message.focus();
+        },
+        startChat() {
+            if (this.conversations[this.current.pivot.room]) {
+                this.conversation = this.conversations[this.current.pivot.room];
+            } else {
+                this.conversation = [];
+            }
+
+            this.$store.state.chat.client.subscribe(`chat/${this.current.pivot.room}`);
+            this.$store.state.chat.client.on('message', (topic, message) => {
+                const payload = JSON.parse(message);
+                if (payload.type == 'CHAT') {
+                    console.log('Pushing...In');
+                    this.conversation.push(payload);
+                    setTimeout(() => {
+                        this.scrollToBottom();
+                    }, 10);
+                }
+            });
         }
     },
     watch: {
@@ -66,6 +100,7 @@ export default {
                     setTimeout(() => {
                         this.scrollToBottom();
                         this.focusType();
+                        this.startChat();
                     }, 500);
                 }
             },

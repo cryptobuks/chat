@@ -1,10 +1,10 @@
-import auth from '../../auth';
-import service from '../../service';
+import auth from '../../services/auth';
+import request from '../../services/request';
 
 export default {
     loginUser(context, user) {
         context.commit('wait', true);
-        service.api().post('users', user).then((response) => {
+        request.api().post('users', user).then((response) => {
             let user = response.data.data;
             auth.login(user);
             context.commit('login', user);

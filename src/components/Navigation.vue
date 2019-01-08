@@ -23,7 +23,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import firebase from '@/firebase';
+import firebase from '../services/firebase';
 
 export default {
     computed: {

@@ -1,8 +1,8 @@
-import service from '../../service';
+import request from '../../services/request';
 
 export default {
     getFriendList(context) {
-        service.auth().get('users').then((response) => {
+        request.auth().get('users').then((response) => {
             let data = response.data;
             if (! data.status) {
                 console.log(data.message);
@@ -15,11 +15,12 @@ export default {
             context.commit('searchFriend', null);
             return;
         }
-        context.commit('searchFriend', service.auth().get('users/search?term='+term));
+        context.commit('searchFriend', request.auth().get('users/search?term='+term));
     },
     addFriend(context, id) {
-        service.auth().put('users/invite', {id}).then((xhr) => {
+        request.auth().put('users/invite', {id}).then((xhr) => {
             context.commit('friends', xhr.data.data);
+            context.commit('notifyFriend', id);
         }).catch((error) => {
             console.log(error);
         });

@@ -4,4 +4,6 @@ export default {
     searchFriend: null,
     current: null,
     wait: false,
+    chat: null,
+    conversations: {}
 }

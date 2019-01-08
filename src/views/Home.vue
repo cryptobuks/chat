@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import firebase from '../firebase';
-import User from '../user';
+import firebase from '../services/firebase';
+import GoogleUser from '../models/google-user';
 import { mapActions, mapState } from 'vuex';
 
 export default {
@@ -29,7 +29,7 @@ export default {
     methods: {
         loginWithGoogle() {
             firebase.auth().signInWithPopup(this.googleProvider).then((result) => {
-                let user = new User(result.user, result.credential.accessToken);
+                let user = new GoogleUser(result.user, result.credential.accessToken);
                 this.loginUser(user);
             }).catch(function(error) {
                 console.log(error);

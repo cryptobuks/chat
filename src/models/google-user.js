@@ -1,4 +1,4 @@
-export default class User {
+export default class GoogleUser {
     constructor(user, token) {
         this.id = user.uid;
         this.name = user.displayName;
