@@ -51,7 +51,7 @@ export default {
                     this.getFriendList();
                     break;
                 case 'MESSAGE':
-                    if (this.current && this.current.pivot.room != payload.room) {
+                    if (! this.current || (this.current && this.current.pivot.room != payload.room)) {
                         // Background message.
                         this.conversations[payload.room].push(payload);
                     }

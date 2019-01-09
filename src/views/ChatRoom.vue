@@ -46,6 +46,10 @@ export default {
             conversation: []
         };
     },
+    created() {
+        const roomId = this.$route.params.room;
+        this.conversation = this.conversations[roomId];
+    },
     updated() {
         const roomId = this.$route.params.room;
         this.conversation = this.conversations[roomId];
@@ -110,6 +114,10 @@ export default {
                 this.$refs.message.focus();
             },
             deep: true
+        },
+        '$route'(to, from) {
+            this.conversation = this.conversations[to.params.room];
+            setTimeout(this.scrollToBottom, 100);
         },
     }
 }
