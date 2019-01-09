@@ -1,5 +1,5 @@
 <template>
-    <modal v-show="showModal" @close="closeModal">
+    <modal v-show="showModal" @close="closeModal" width="md:w-1/3 sm:w-1/2">
         <div class="text-grey-darkest">
             <h4 class="text-lg text-grey-darkest mb-6">Invite Friend</h4>
             <div class="flex">
