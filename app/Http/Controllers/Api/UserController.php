@@ -65,7 +65,10 @@ class UserController extends Controller
     {
         $this->user()->inviteFriend($request->id);
 
-        return response()->api($this->user()->friends);
+        $friends = $this->user()->friends()->latest()->get();
+        $invitations = $this->user()->invitations()->latest()->get();
+
+        return response()->api($friends->merge($invitations));
     }
 
     /**
