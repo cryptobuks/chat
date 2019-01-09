@@ -36,6 +36,15 @@ export default {
             });
         },
         ...mapActions(['loginUser'])
+    },
+    watch: {
+        user: {
+            handler(newUser) {
+                if (newUser) {
+                    this.$router.replace('/chat');
+                }
+            }
+        }
     }
 };
 </script>

@@ -21,7 +21,7 @@ export default {
         user: {
             handler(newUser) {
                 if (newUser) {
-                    this.$router.replace('/chat');
+                    // this.$router.replace('/chat');
                 } else {
                     this.$router.replace('/');
                 }

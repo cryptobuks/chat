@@ -9,7 +9,7 @@
             </div>
 
             <div class="flex flex-col overflow-y-auto flex-1">
-                <contact-item v-for="friend in friends" :key="friend.id" :contact="friend" :active="friend.id == currentId"></contact-item>
+                <contact-item v-for="friend in friends" :key="friend.id" :contact="friend" :active="isActive(friend)"></contact-item>
                 <div class="flex flex-col justify-center items-center py-8" v-if="friends.length < 1">
                     <p class="text-sm text-grey-darkest mb-6">No friends?</p>
                     <button class="text-blue" @click="openModal">Add Friends</button>
@@ -41,16 +41,15 @@ export default {
             return null;
         }
     },
-    mounted() {
-        this.getFriendList();
-    },
     methods: {
-        ...mapActions(['getFriendList']),
         closeModal() {
             this.showModal = false;
         },
         openModal() {
             this.showModal = true;
+        },
+        isActive(friend) {
+            return this.$route.params.room == friend.pivot.room;
         },
     }
 }

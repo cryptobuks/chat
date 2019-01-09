@@ -1,4 +1,5 @@
 import Chat from "../services/chat";
+import store from ".";
 
 export default {
     login(state, user) {
@@ -10,6 +11,7 @@ export default {
     },
     friends(state, friends) {
         state.friends = friends;
+        store.commit('initConversations', friends);
     },
     notifyFriend(state, id) {
         if (state.chat) {
@@ -24,7 +26,18 @@ export default {
     current(state, user) {
         state.current = user;
     },
+    setCurrent(state, data) {
+        const current = data.friends.filter(item => item.pivot.room == data.room);
+        if (current.length > 0) {
+            state.current = current[0];
+        }
+    },
     wait(state, what) {
         state.wait = what;
+    },
+    initConversations(state, friends) {
+        friends.forEach(item => {
+            state.conversations[item.pivot.room] = [];
+        });
     },
 };

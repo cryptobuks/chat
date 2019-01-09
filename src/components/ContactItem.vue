@@ -1,5 +1,5 @@
 <template>
-    <a href="javascript:void(0);" class="no-underline" @click="startConversation(contact)">
+    <a href="javascript:void(0);" class="no-underline" @click="onContactClick(contact)">
         <div class="py-3 px-4" :class="active ? 'bg-grey-light' : 'hover:bg-grey-lighter'">
             <div class="flex items-center">
                 <div class="flex items-start mr-4">
@@ -8,12 +8,12 @@
                 </div>
                 <div class="text-sm flex flex-col flex-1">
                     <p class="text-grey-darkest font-semibold" v-text="contact.name"></p>
-                    <!-- <p class="text-grey-dark">...</p> -->
+                    <p class="text-grey-dark" v-show="false">...</p>
                 </div>
-                <!-- <div class="text-sm flex flex-col">
+                <div class="text-sm flex flex-col" v-show="false">
                     <div class="flex justify-end mb-2" v-if="online"><span class="rounded-full bg-green text-white p-1 text-xs"></span></div>
                     <p class="text-grey-dark text-xs">Aug 18</p>
-                </div> -->
+                </div>
             </div>
         </div>
     </a>
@@ -25,6 +25,10 @@ import { mapActions } from 'vuex';
 export default {
     props: ['active', 'online', 'unread', 'contact'],
     methods: {
+        onContactClick(contact) {
+            this.$router.push(`/chat/${contact.pivot.room}`);
+            this.startConversation(contact);
+        },
         ...mapActions(['startConversation'])
     }
 }

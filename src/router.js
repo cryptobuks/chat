@@ -12,15 +12,25 @@ const router = new Router({
         {
             path: '/',
             name: 'home',
-            component: Home
+            component: Home,
+            meta: {
+                redirectIfLoggedIn: true
+            }
         },
         {
             path: '/chat',
             name: 'chat',
-            component: () => import(/* webpackChunkName: "about" */ './views/Chat.vue'),
+            component: () => import(/* webpackChunkName: "chat" */ './views/Chat.vue'),
             meta: {
                 requireAuth: true,
-            }
+            },
+            children: [
+                {
+                    path: ':room',
+                    name: 'chat-room',
+                    component: () => import(/* webpackChunkName: "chat-room" */ './views/ChatRoom.vue')
+                }
+            ]
         },
         {
             path: '/about',
@@ -33,6 +43,9 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     if (! auth.check() && to.meta.requireAuth) {
         next({path: '/', replace: true});
+    }
+    if (auth.check() && to.meta.redirectIfLoggedIn) {
+        next({path: '/chat', replace: true});
     }
 
     next();
